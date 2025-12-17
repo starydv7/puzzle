@@ -1,0 +1,86 @@
+{
+  "chapters": [
+    {
+      "id": "chapter1",
+      "title": "The Adventure Begins",
+      "story": "Welcome to Puzzle Land! 🧩 I'm your guide, and together we'll solve amazing puzzles to save the kingdom! Are you ready for your first adventure?",
+      "puzzles": ["b1", "b2", "b3"],
+      "unlockCondition": "none",
+      "reward": "🌟 First Explorer Badge",
+      "theme": "forest"
+    },
+    {
+      "id": "chapter2",
+      "title": "The Pattern Forest",
+      "story": "You've entered the Pattern Forest! 🌲 The trees here follow mysterious patterns. Can you solve the puzzles to find your way through?",
+      "puzzles": ["b4", "b5", "b6", "b7"],
+      "unlockCondition": "complete_chapter1",
+      "reward": "🌳 Forest Master Badge",
+      "theme": "forest"
+    },
+    {
+      "id": "chapter3",
+      "title": "The Odd One Out Cave",
+      "story": "Deep in the cave, you find strange objects! 🔍 One of them is different from the others. Can you spot which one?",
+      "puzzles": ["b8", "b9", "b10", "b11"],
+      "unlockCondition": "complete_chapter2",
+      "reward": "💎 Cave Explorer Badge",
+      "theme": "cave"
+    },
+    {
+      "id": "chapter4",
+      "title": "The Number Sequence River",
+      "story": "You've reached the Number Sequence River! 🌊 The numbers flow in patterns. Follow the pattern to cross safely!",
+      "puzzles": ["b12", "b13", "b14", "b15"],
+      "unlockCondition": "complete_chapter3",
+      "reward": "🌊 River Master Badge",
+      "theme": "water"
+    },
+    {
+      "id": "chapter5",
+      "title": "The Intermediate Challenge",
+      "story": "Congratulations! You've mastered the basics! 🎉 Now the puzzles get more challenging. Are you ready?",
+      "puzzles": ["i1", "i2", "i3", "i4"],
+      "unlockCondition": "complete_beginner_10",
+      "reward": "⭐ Rising Star Badge",
+      "theme": "sky"
+    },
+    {
+      "id": "chapter6",
+      "title": "The Advanced Tower",
+      "story": "You've reached the Advanced Tower! 🏰 Only the smartest puzzle solvers can reach the top. Show us what you've learned!",
+      "puzzles": ["a1", "a2", "a3", "a4"],
+      "unlockCondition": "complete_intermediate_10",
+      "reward": "👑 Puzzle Master Crown",
+      "theme": "castle"
+    }
+  ],
+  "themes": {
+    "forest": {
+      "background": "#8BC34A",
+      "primary": "#4CAF50",
+      "accent": "#2E7D32"
+    },
+    "cave": {
+      "background": "#5D4037",
+      "primary": "#795548",
+      "accent": "#3E2723"
+    },
+    "water": {
+      "background": "#03A9F4",
+      "primary": "#2196F3",
+      "accent": "#0277BD"
+    },
+    "sky": {
+      "background": "#E1F5FE",
+      "primary": "#03A9F4",
+      "accent": "#0288D1"
+    },
+    "castle": {
+      "background": "#9E9E9E",
+      "primary": "#757575",
+      "accent": "#424242"
+    }
+  }
+}
+

@@ -1,0 +1,494 @@
+{
+  "beginner": [
+    {
+      "id": "b1",
+      "type": "pattern_completion",
+      "question": "What comes next in the pattern?",
+      "pattern": ["🔴", "🔵", "🔴", "🔵", "🔴", "?"],
+      "options": ["🔴", "🔵", "🟢", "🟡"],
+      "correct": 1,
+      "explanation": "The pattern alternates between red and blue circles!"
+    },
+    {
+      "id": "b2",
+      "type": "pattern_completion",
+      "question": "Complete the pattern:",
+      "pattern": ["⭐", "⭐⭐", "⭐⭐⭐", "⭐⭐⭐⭐", "?"],
+      "options": ["⭐⭐⭐⭐⭐", "⭐⭐", "⭐", "⭐⭐⭐⭐⭐⭐"],
+      "correct": 0,
+      "explanation": "Each step adds one more star!"
+    },
+    {
+      "id": "b3",
+      "type": "odd_one_out",
+      "question": "Which one is different?",
+      "items": ["🐱", "🐶", "🐱", "🐱"],
+      "options": ["🐱", "🐶", "🐱", "🐱"],
+      "correct": 1,
+      "explanation": "The dog is different - all others are cats!"
+    },
+    {
+      "id": "b4",
+      "type": "odd_one_out",
+      "question": "Find the odd one out:",
+      "items": ["🍎", "🍌", "🍎", "🍎"],
+      "options": ["🍎", "🍌", "🍎", "🍎"],
+      "correct": 1,
+      "explanation": "Banana is different - all others are apples!"
+    },
+    {
+      "id": "b5",
+      "type": "sequence_logic",
+      "question": "What number comes next?",
+      "sequence": [2, 4, 6, 8, "?"],
+      "options": ["10", "9", "12", "7"],
+      "correct": 0,
+      "explanation": "We're counting by 2s: 2, 4, 6, 8, 10!"
+    },
+    {
+      "id": "b6",
+      "type": "sequence_logic",
+      "question": "Complete the sequence:",
+      "sequence": [1, 3, 5, 7, "?"],
+      "options": ["9", "8", "6", "10"],
+      "correct": 0,
+      "explanation": "These are odd numbers: 1, 3, 5, 7, 9!"
+    },
+    {
+      "id": "b7",
+      "type": "pattern_completion",
+      "question": "What shape comes next?",
+      "pattern": ["🔺", "🔷", "🔺", "🔷", "?"],
+      "options": ["🔺", "🔷", "🟢", "⭐"],
+      "correct": 0,
+      "explanation": "Triangle and diamond alternate!"
+    },
+    {
+      "id": "b8",
+      "type": "odd_one_out",
+      "question": "Which doesn't belong?",
+      "items": ["🚗", "🚗", "✈️", "🚗"],
+      "options": ["🚗", "🚗", "✈️", "🚗"],
+      "correct": 2,
+      "explanation": "The airplane is different - all others are cars!"
+    },
+    {
+      "id": "b9",
+      "type": "pattern_completion",
+      "question": "What comes next?",
+      "pattern": ["🐸", "🐸", "🐸", "🐸", "?"],
+      "options": ["🐸", "🐶", "🐱", "🐰"],
+      "correct": 0,
+      "explanation": "All are frogs - the pattern continues!"
+    },
+    {
+      "id": "b10",
+      "type": "sequence_logic",
+      "question": "Count the numbers:",
+      "sequence": [1, 2, 3, 4, "?"],
+      "options": ["5", "6", "3", "7"],
+      "correct": 0,
+      "explanation": "We're counting: 1, 2, 3, 4, 5!"
+    },
+    {
+      "id": "b11",
+      "type": "odd_one_out",
+      "question": "Find the different animal:",
+      "items": ["🐼", "🐼", "🐯", "🐼"],
+      "options": ["🐼", "🐼", "🐯", "🐼"],
+      "correct": 2,
+      "explanation": "The tiger is different - all others are pandas!"
+    },
+    {
+      "id": "b12",
+      "type": "pattern_completion",
+      "question": "Complete the color pattern:",
+      "pattern": ["🟢", "🟡", "🟢", "🟡", "?"],
+      "options": ["🟢", "🔴", "🔵", "🟡"],
+      "correct": 0,
+      "explanation": "Green and yellow alternate!"
+    },
+    {
+      "id": "b13",
+      "type": "sequence_logic",
+      "question": "What comes next?",
+      "sequence": [10, 9, 8, 7, "?"],
+      "options": ["6", "5", "9", "8"],
+      "correct": 0,
+      "explanation": "We're counting backwards: 10, 9, 8, 7, 6!"
+    },
+    {
+      "id": "b14",
+      "type": "odd_one_out",
+      "question": "Which fruit is different?",
+      "items": ["🍓", "🍓", "🍕", "🍓"],
+      "options": ["🍓", "🍓", "🍕", "🍓"],
+      "correct": 2,
+      "explanation": "Pizza is different - all others are strawberries!"
+    },
+    {
+      "id": "b15",
+      "type": "pattern_completion",
+      "question": "What shape is next?",
+      "pattern": ["⭕", "🔲", "⭕", "🔲", "?"],
+      "options": ["⭕", "🔺", "⭐", "🔷"],
+      "correct": 0,
+      "explanation": "Circle and square alternate!"
+    },
+    {
+      "id": "b16",
+      "type": "sequence_logic",
+      "question": "Complete the count:",
+      "sequence": [5, 6, 7, 8, "?"],
+      "options": ["9", "10", "4", "11"],
+      "correct": 0,
+      "explanation": "We're counting up: 5, 6, 7, 8, 9!"
+    },
+    {
+      "id": "b17",
+      "type": "odd_one_out",
+      "question": "Which toy is different?",
+      "items": ["🧸", "🧸", "🎮", "🧸"],
+      "options": ["🧸", "🧸", "🎮", "🧸"],
+      "correct": 2,
+      "explanation": "The game controller is different - all others are teddy bears!"
+    },
+    {
+      "id": "b18",
+      "type": "pattern_completion",
+      "question": "What comes next?",
+      "pattern": ["🌙", "☀️", "🌙", "☀️", "?"],
+      "options": ["🌙", "⭐", "🌍", "☁️"],
+      "correct": 0,
+      "explanation": "Moon and sun alternate!"
+    }
+  ],
+  "intermediate": [
+    {
+      "id": "i1",
+      "type": "pattern_completion",
+      "question": "What comes next?",
+      "pattern": ["🔴", "🔴🔵", "🔴🔵🔴", "🔴🔵🔴🔵", "?"],
+      "options": ["🔴🔵🔴🔵🔴", "🔴🔵🔴", "🔵🔴🔵", "🔴🔴🔴"],
+      "correct": 0,
+      "explanation": "Each step adds one more color, alternating red and blue!"
+    },
+    {
+      "id": "i2",
+      "type": "sequence_logic",
+      "question": "What's the next number?",
+      "sequence": [5, 10, 15, 20, "?"],
+      "options": ["25", "24", "22", "30"],
+      "correct": 0,
+      "explanation": "We're counting by 5s: 5, 10, 15, 20, 25!"
+    },
+    {
+      "id": "i3",
+      "type": "odd_one_out",
+      "question": "Find the different one:",
+      "items": ["🟢", "🟢", "🔴", "🟢"],
+      "options": ["🟢", "🟢", "🔴", "🟢"],
+      "correct": 2,
+      "explanation": "Red is different - all others are green!"
+    },
+    {
+      "id": "i4",
+      "type": "pattern_completion",
+      "question": "Complete the pattern:",
+      "pattern": ["1", "4", "9", "16", "?"],
+      "options": ["25", "20", "24", "18"],
+      "correct": 0,
+      "explanation": "These are square numbers: 1×1=1, 2×2=4, 3×3=9, 4×4=16, 5×5=25!"
+    },
+    {
+      "id": "i5",
+      "type": "sequence_logic",
+      "question": "What comes next?",
+      "sequence": [10, 8, 6, 4, "?"],
+      "options": ["2", "3", "5", "0"],
+      "correct": 0,
+      "explanation": "We're counting backwards by 2s: 10, 8, 6, 4, 2!"
+    },
+    {
+      "id": "i6",
+      "type": "odd_one_out",
+      "question": "Which is different?",
+      "items": ["🔵", "🟡", "🔵", "🔵"],
+      "options": ["🔵", "🟡", "🔵", "🔵"],
+      "correct": 1,
+      "explanation": "Yellow is different - all others are blue!"
+    },
+    {
+      "id": "i7",
+      "type": "pattern_completion",
+      "question": "What shape completes the pattern?",
+      "pattern": ["⭐", "⭐⭐⭐", "⭐⭐⭐⭐⭐", "?"],
+      "options": ["⭐⭐⭐⭐⭐⭐⭐", "⭐⭐", "⭐⭐⭐⭐", "⭐"],
+      "correct": 0,
+      "explanation": "Each step adds 2 more stars: 1, 3, 5, 7!"
+    },
+    {
+      "id": "i8",
+      "type": "sequence_logic",
+      "question": "Complete the sequence:",
+      "sequence": [3, 6, 12, 24, "?"],
+      "options": ["48", "36", "30", "42"],
+      "correct": 0,
+      "explanation": "Each number doubles: 3×2=6, 6×2=12, 12×2=24, 24×2=48!"
+    },
+    {
+      "id": "i9",
+      "type": "pattern_completion",
+      "question": "What comes next?",
+      "pattern": ["A", "B", "C", "D", "?"],
+      "options": ["E", "F", "C", "B"],
+      "correct": 0,
+      "explanation": "We're going through the alphabet: A, B, C, D, E!"
+    },
+    {
+      "id": "i10",
+      "type": "sequence_logic",
+      "question": "What's the pattern?",
+      "sequence": [2, 5, 8, 11, "?"],
+      "options": ["14", "13", "12", "15"],
+      "correct": 0,
+      "explanation": "We're adding 3 each time: 2+3=5, 5+3=8, 8+3=11, 11+3=14!"
+    },
+    {
+      "id": "i11",
+      "type": "odd_one_out",
+      "question": "Find the different shape:",
+      "items": ["🔺", "🔺", "⭕", "🔺"],
+      "options": ["🔺", "🔺", "⭕", "🔺"],
+      "correct": 2,
+      "explanation": "The circle is different - all others are triangles!"
+    },
+    {
+      "id": "i12",
+      "type": "pattern_completion",
+      "question": "Complete this pattern:",
+      "pattern": ["🔴🟢", "🟢🔵", "🔵🟡", "🟡🔴", "?"],
+      "options": ["🔴🟢", "🟢🔵", "🔵🟡", "🟡🔴"],
+      "correct": 0,
+      "explanation": "The pattern cycles through color pairs!"
+    },
+    {
+      "id": "i13",
+      "type": "sequence_logic",
+      "question": "What number comes next?",
+      "sequence": [1, 3, 6, 10, "?"],
+      "options": ["15", "14", "13", "16"],
+      "correct": 0,
+      "explanation": "We add 2, then 3, then 4, then 5: 10+5=15!"
+    },
+    {
+      "id": "i14",
+      "type": "odd_one_out",
+      "question": "Which number is different?",
+      "items": ["2", "4", "2", "2"],
+      "options": ["2", "4", "2", "2"],
+      "correct": 1,
+      "explanation": "4 is different - all others are 2!"
+    },
+    {
+      "id": "i15",
+      "type": "pattern_completion",
+      "question": "What completes this?",
+      "pattern": ["🌱", "🌿", "🌳", "?"],
+      "options": ["🌲", "🌾", "🍃", "🌴"],
+      "correct": 0,
+      "explanation": "A tree grows: seed, sprout, tree, forest!"
+    },
+    {
+      "id": "i16",
+      "type": "sequence_logic",
+      "question": "Complete the sequence:",
+      "sequence": [20, 18, 16, 14, "?"],
+      "options": ["12", "13", "11", "15"],
+      "correct": 0,
+      "explanation": "We're counting backwards by 2s: 20, 18, 16, 14, 12!"
+    },
+    {
+      "id": "i17",
+      "type": "odd_one_out",
+      "question": "Which doesn't match?",
+      "items": ["🐟", "🐠", "🐟", "🐟"],
+      "options": ["🐟", "🐠", "🐟", "🐟"],
+      "correct": 1,
+      "explanation": "The tropical fish is different - all others are regular fish!"
+    },
+    {
+      "id": "i18",
+      "type": "pattern_completion",
+      "question": "What comes next?",
+      "pattern": ["🔢", "🔢🔢", "🔢🔢🔢", "?"],
+      "options": ["🔢🔢🔢🔢", "🔢", "🔢🔢", "🔢🔢🔢🔢🔢"],
+      "correct": 0,
+      "explanation": "Each step adds one more number emoji!"
+    }
+  ],
+  "advanced": [
+    {
+      "id": "a1",
+      "type": "pattern_completion",
+      "question": "What comes next in this complex pattern?",
+      "pattern": ["🔴🔵", "🔵🟢", "🟢🟡", "🟡🔴", "?"],
+      "options": ["🔴🔵", "🔵🟢", "🟢🟡", "🟡🔴"],
+      "correct": 0,
+      "explanation": "The pattern cycles through color pairs, moving forward one color each time!"
+    },
+    {
+      "id": "a2",
+      "type": "sequence_logic",
+      "question": "What's the next number?",
+      "sequence": [1, 4, 9, 16, 25, "?"],
+      "options": ["36", "30", "35", "40"],
+      "correct": 0,
+      "explanation": "These are perfect squares: 1², 2², 3², 4², 5², 6²=36!"
+    },
+    {
+      "id": "a3",
+      "type": "odd_one_out",
+      "question": "Find the one that doesn't fit:",
+      "items": ["🔺", "🔷", "🔺", "🔺"],
+      "options": ["🔺", "🔷", "🔺", "🔺"],
+      "correct": 1,
+      "explanation": "The diamond is different - all others are triangles!"
+    },
+    {
+      "id": "a4",
+      "type": "sequence_logic",
+      "question": "Complete this sequence:",
+      "sequence": [2, 6, 18, 54, "?"],
+      "options": ["162", "108", "72", "90"],
+      "correct": 0,
+      "explanation": "Each number is multiplied by 3: 2×3=6, 6×3=18, 18×3=54, 54×3=162!"
+    },
+    {
+      "id": "a5",
+      "type": "pattern_completion",
+      "question": "What completes this pattern?",
+      "pattern": ["A", "C", "E", "G", "?"],
+      "options": ["I", "H", "F", "J"],
+      "correct": 0,
+      "explanation": "These are every other letter: A, C, E, G, I!"
+    },
+    {
+      "id": "a6",
+      "type": "sequence_logic",
+      "question": "What number comes next?",
+      "sequence": [1, 1, 2, 3, 5, "?"],
+      "options": ["8", "7", "6", "10"],
+      "correct": 0,
+      "explanation": "This is the Fibonacci sequence! Each number is the sum of the two before it: 3+5=8!"
+    },
+    {
+      "id": "a7",
+      "type": "odd_one_out",
+      "question": "Which one is different?",
+      "items": ["⭐", "⭐", "🔺", "⭐"],
+      "options": ["⭐", "⭐", "🔺", "⭐"],
+      "correct": 2,
+      "explanation": "The triangle is different - all others are stars!"
+    },
+    {
+      "id": "a8",
+      "type": "pattern_completion",
+      "question": "What comes next?",
+      "pattern": ["1", "8", "27", "64", "?"],
+      "options": ["125", "100", "81", "144"],
+      "correct": 0,
+      "explanation": "These are cube numbers: 1³=1, 2³=8, 3³=27, 4³=64, 5³=125!"
+    },
+    {
+      "id": "a9",
+      "type": "sequence_logic",
+      "question": "What's the pattern?",
+      "sequence": [7, 14, 21, 28, "?"],
+      "options": ["35", "34", "36", "33"],
+      "correct": 0,
+      "explanation": "We're counting by 7s: 7, 14, 21, 28, 35!"
+    },
+    {
+      "id": "a10",
+      "type": "pattern_completion",
+      "question": "Complete this complex pattern:",
+      "pattern": ["🔴", "🔵🔵", "🔴🔴🔴", "🔵🔵🔵🔵", "?"],
+      "options": ["🔴🔴🔴🔴🔴", "🔵🔵🔵", "🔴🔴", "🔵"],
+      "correct": 0,
+      "explanation": "Red and blue alternate, and each step adds one more!"
+    },
+    {
+      "id": "a11",
+      "type": "odd_one_out",
+      "question": "Find the different letter:",
+      "items": ["A", "E", "A", "A"],
+      "options": ["A", "E", "A", "A"],
+      "correct": 1,
+      "explanation": "E is different - all others are A!"
+    },
+    {
+      "id": "a12",
+      "type": "sequence_logic",
+      "question": "What comes next?",
+      "sequence": [100, 90, 80, 70, "?"],
+      "options": ["60", "65", "55", "75"],
+      "correct": 0,
+      "explanation": "We're counting backwards by 10s: 100, 90, 80, 70, 60!"
+    },
+    {
+      "id": "a13",
+      "type": "pattern_completion",
+      "question": "Complete the pattern:",
+      "pattern": ["Z", "Y", "X", "W", "?"],
+      "options": ["V", "U", "T", "S"],
+      "correct": 0,
+      "explanation": "We're going backwards through the alphabet: Z, Y, X, W, V!"
+    },
+    {
+      "id": "a14",
+      "type": "sequence_logic",
+      "question": "What's the next number?",
+      "sequence": [4, 9, 16, 25, "?"],
+      "options": ["36", "35", "34", "37"],
+      "correct": 0,
+      "explanation": "These are squares: 2²=4, 3²=9, 4²=16, 5²=25, 6²=36!"
+    },
+    {
+      "id": "a15",
+      "type": "odd_one_out",
+      "question": "Which number doesn't fit?",
+      "items": ["3", "3", "7", "3"],
+      "options": ["3", "3", "7", "3"],
+      "correct": 2,
+      "explanation": "7 is different - all others are 3!"
+    },
+    {
+      "id": "a16",
+      "type": "pattern_completion",
+      "question": "What completes this?",
+      "pattern": ["🔢", "🔢🔢", "🔢🔢🔢", "🔢🔢🔢🔢", "?"],
+      "options": ["🔢🔢🔢🔢🔢", "🔢🔢", "🔢", "🔢🔢🔢"],
+      "correct": 0,
+      "explanation": "Each step adds one more number emoji: 1, 2, 3, 4, 5!"
+    },
+    {
+      "id": "a17",
+      "type": "sequence_logic",
+      "question": "Complete the sequence:",
+      "sequence": [1, 4, 7, 10, "?"],
+      "options": ["13", "12", "14", "11"],
+      "correct": 0,
+      "explanation": "We're adding 3 each time: 1+3=4, 4+3=7, 7+3=10, 10+3=13!"
+    },
+    {
+      "id": "a18",
+      "type": "pattern_completion",
+      "question": "What comes next?",
+      "pattern": ["🌍", "🌎", "🌏", "🌍", "?"],
+      "options": ["🌎", "🌏", "🌍", "🌕"],
+      "correct": 0,
+      "explanation": "The pattern cycles through Earth views: globe, Americas, Asia-Pacific, repeat!"
+    }
+  ]
+}
