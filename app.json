@@ -16,13 +16,15 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.puzzlefun.kids"
+      "bundleIdentifier": "com.puzzlefun.kids",
+      "icon": "./assets/icon.png"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#4A90E2"
       },
+      "icon": "./assets/icon.png",
       "package": "com.puzzlefun.kids",
       "permissions": []
     },

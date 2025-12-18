@@ -10,6 +10,8 @@ npm-debug.*
 *.orig.*
 web-build/
 dist/
+ios/
+android/
 
 # macOS
 .DS_Store
@@ -24,3 +26,6 @@ dist/
 .env
 .env.local
 
+# Assets (uncomment if you want to ignore placeholder assets)
+# assets/*.png
+# !assets/.gitkeep
