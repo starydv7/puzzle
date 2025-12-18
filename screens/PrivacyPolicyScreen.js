@@ -1,22 +1,30 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
 import { hapticFeedback } from '../utils/haptics';
 
 const PrivacyPolicyScreen = ({ navigation }) => {
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => {
-            hapticFeedback.light();
-            navigation.goBack();
-          }}
-        >
-          <Text style={styles.backButtonText}>← Back</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>Privacy Policy</Text>
-      </View>
+    <View style={styles.container}>
+      <SafeAreaView style={styles.headerContainer}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => {
+              hapticFeedback.light();
+              navigation.goBack();
+            }}
+          >
+            <Text style={styles.backButtonText}>← Back</Text>
+          </TouchableOpacity>
+          <Text style={styles.title}>Privacy Policy</Text>
+        </View>
+      </SafeAreaView>
+
+      <ScrollView 
+        style={styles.scrollContent}
+        contentContainerStyle={styles.scrollContentContainer}
+        showsVerticalScrollIndicator={false}
+      >
 
       <View style={styles.content}>
         <Text style={styles.lastUpdated}>Last Updated: {new Date().toLocaleDateString()}</Text>
@@ -158,7 +166,8 @@ const PrivacyPolicyScreen = ({ navigation }) => {
           </Text>
         </View>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
@@ -167,13 +176,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F5F5',
   },
-  header: {
+  headerContainer: {
     backgroundColor: '#4A90E2',
+    paddingBottom: 0,
+  },
+  header: {
     padding: 20,
-    paddingTop: 50,
+    paddingTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   backButton: {
-    marginBottom: 10,
+    marginRight: 15,
+  },
+  scrollContent: {
+    flex: 1,
+  },
+  scrollContentContainer: {
+    paddingBottom: 20,
   },
   backButtonText: {
     fontSize: 18,

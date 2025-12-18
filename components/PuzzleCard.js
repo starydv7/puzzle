@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 const PuzzleCard = ({ level, index, stars, isLocked, onPress }) => {
@@ -62,5 +62,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PuzzleCard;
+export default memo(PuzzleCard);
 

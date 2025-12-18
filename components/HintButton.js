@@ -54,15 +54,17 @@ const HintButton = ({ onPress, hintUsed, disabled }) => {
 const styles = StyleSheet.create({
   hintButton: {
     backgroundColor: '#FF9800',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 20,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 25,
     alignItems: 'center',
-    elevation: 2,
+    elevation: 4,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    borderWidth: 3,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   hintUsed: {
     backgroundColor: '#CCCCCC',
@@ -72,9 +74,12 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   hintText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#FFFFFF',
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
 });
 

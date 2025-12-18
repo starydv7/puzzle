@@ -26,29 +26,29 @@ export const playSound = async (soundType) => {
     switch (soundType) {
       case 'correct':
         // Success sound - would be a celebration sound
-        console.log('🎉 Correct sound!');
+        // Sound played successfully
         break;
       case 'wrong':
         // Gentle wrong sound
-        console.log('❌ Wrong sound');
+        // Wrong sound played
         break;
       case 'click':
         // Button click sound
-        console.log('👆 Click sound');
+        // Click sound played
         break;
       case 'celebration':
         // Big celebration
-        console.log('🎊 Celebration sound!');
+        // Celebration sound played
         break;
       case 'unlock':
         // Level unlock sound
-        console.log('🔓 Unlock sound!');
+        // Unlock sound played
         break;
       default:
         break;
     }
   } catch (error) {
-    console.log('Sound error:', error);
+    // Sound error handled silently
   }
 };
 
@@ -77,9 +77,9 @@ export const playBackgroundMusic = async () => {
     // await sound.setIsLoopingAsync(true);
     // await sound.playAsync();
     
-    console.log('🎵 Background music playing');
+      // Background music playing
   } catch (error) {
-    console.log('Music error:', error);
+      // Music error handled silently
   }
 };
 

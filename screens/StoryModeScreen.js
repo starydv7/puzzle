@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated, SafeAreaView } from 'react-native';
 import CharacterMascot from '../components/CharacterMascot';
 import { getChapters, isChapterUnlocked, isChapterCompleted, getChapterProgress, getThemeColors } from '../utils/storyMode';
 import { hapticFeedback } from '../utils/haptics';
@@ -73,16 +73,24 @@ const StoryModeScreen = ({ navigation }) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backButtonText}>← Back</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>📖 Story Mode</Text>
-      </View>
+    <View style={styles.container}>
+      <SafeAreaView style={styles.headerContainer}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.backButtonText}>← Back</Text>
+          </TouchableOpacity>
+          <Text style={styles.title}>📖 Story Mode</Text>
+        </View>
+      </SafeAreaView>
+
+      <ScrollView 
+        style={styles.scrollContent}
+        contentContainerStyle={styles.scrollContentContainer}
+        showsVerticalScrollIndicator={false}
+      >
 
       <CharacterMascot
         emotion="excited"
@@ -145,7 +153,8 @@ const StoryModeScreen = ({ navigation }) => {
           );
         })}
       </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
@@ -154,13 +163,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F5F5',
   },
-  header: {
+  headerContainer: {
     backgroundColor: '#4A90E2',
+    paddingBottom: 0,
+  },
+  header: {
     padding: 20,
-    paddingTop: 50,
+    paddingTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   backButton: {
-    marginBottom: 10,
+    marginRight: 15,
+  },
+  scrollContent: {
+    flex: 1,
+  },
+  scrollContentContainer: {
+    paddingBottom: 20,
   },
   backButtonText: {
     fontSize: 18,

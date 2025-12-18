@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 // Screens
 import SplashScreen from './screens/SplashScreen';
@@ -15,6 +16,11 @@ import StatsScreen from './screens/StatsScreen';
 import StoryModeScreen from './screens/StoryModeScreen';
 import AboutScreen from './screens/AboutScreen';
 import PrivacyPolicyScreen from './screens/PrivacyPolicyScreen';
+import SnakeLevelSelectScreen from './screens/SnakeLevelSelectScreen';
+import SnakeGameScreen from './screens/SnakeGameScreen';
+import BunnyGameSelectScreen from './screens/BunnyGameSelectScreen';
+import BunnyModeSelectScreen from './screens/BunnyModeSelectScreen';
+import BunnyGameScreen from './screens/BunnyGameScreen';
 import ErrorBoundary from './components/ErrorBoundary';
 
 const Stack = createStackNavigator();
@@ -22,9 +28,10 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <ErrorBoundary>
-      <NavigationContainer>
-        <StatusBar style="light" />
-        <Stack.Navigator
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <StatusBar style="light" />
+          <Stack.Navigator
           initialRouteName="Splash"
           screenOptions={{
             headerShown: false,
@@ -40,10 +47,16 @@ export default function App() {
           <Stack.Screen name="Settings" component={SettingsScreen} />
           <Stack.Screen name="Stats" component={StatsScreen} />
           <Stack.Screen name="StoryMode" component={StoryModeScreen} />
+          <Stack.Screen name="SnakeLevelSelect" component={SnakeLevelSelectScreen} />
+          <Stack.Screen name="SnakeGame" component={SnakeGameScreen} />
+          <Stack.Screen name="BunnyGameSelect" component={BunnyGameSelectScreen} />
+          <Stack.Screen name="BunnyModeSelect" component={BunnyModeSelectScreen} />
+          <Stack.Screen name="BunnyGame" component={BunnyGameScreen} />
           <Stack.Screen name="About" component={AboutScreen} />
           <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
         </Stack.Navigator>
       </NavigationContainer>
+      </SafeAreaProvider>
     </ErrorBoundary>
   );
 }

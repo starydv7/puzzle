@@ -1,65 +1,114 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { deviceInfo, getMaxContentWidth, getPadding } from '../utils/responsive';
 import CharacterMascot from '../components/CharacterMascot';
 import AnimatedButton from '../components/AnimatedButton';
+import SkeletonLoader from '../components/SkeletonLoader';
 import { getLevelDisplayName, getAgeGroup } from '../utils/gameLogic';
 import { getSettings, saveSettings } from '../utils/storage';
 import { playSound } from '../utils/soundManager';
 import { getDailyChallenge, isDailyChallengeCompleted } from '../utils/dailyChallenge';
 import { hapticFeedback } from '../utils/haptics';
 import { getStreak, updateStreak, getStreakMessage } from '../utils/streakSystem';
+import { safeAsync, handleError } from '../utils/errorHandler';
 
 const HomeScreen = ({ navigation }) => {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [dailyChallenge, setDailyChallenge] = useState(null);
   const [challengeCompleted, setChallengeCompleted] = useState(false);
   const [streak, setStreak] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadSettings();
-    loadDailyChallenge();
-    loadStreak();
+    loadAllData();
   }, []);
 
-  const loadStreak = async () => {
-    const streakData = await getStreak();
-    setStreak(streakData);
+  const loadAllData = async () => {
+    setLoading(true);
+    try {
+      await Promise.all([
+        loadSettings(),
+        loadDailyChallenge(),
+        loadStreak(),
+      ]);
+    } catch (error) {
+      handleError(error, 'HomeScreen');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const loadDailyChallenge = async () => {
-    const challenge = await getDailyChallenge();
-    setDailyChallenge(challenge);
-    const completed = await isDailyChallengeCompleted();
-    setChallengeCompleted(completed);
-  };
+  const loadStreak = useCallback(async () => {
+    const result = await safeAsync(() => getStreak(), 'Loading streak');
+    if (!result.error) {
+      setStreak(result);
+    }
+  }, []);
 
-  const loadSettings = async () => {
-    const settings = await getSettings();
-    setSoundEnabled(settings.soundEnabled);
-  };
+  const loadDailyChallenge = useCallback(async () => {
+    const challengeResult = await safeAsync(() => getDailyChallenge(), 'Loading daily challenge');
+    if (!challengeResult.error) {
+      setDailyChallenge(challengeResult);
+      const completedResult = await safeAsync(() => isDailyChallengeCompleted(), 'Checking challenge status');
+      if (!completedResult.error) {
+        setChallengeCompleted(completedResult);
+      }
+    }
+  }, []);
 
-  const toggleSound = async () => {
+  const loadSettings = useCallback(async () => {
+    const result = await safeAsync(() => getSettings(), 'Loading settings');
+    if (!result.error) {
+      setSoundEnabled(result.soundEnabled ?? true);
+    }
+  }, []);
+
+  const toggleSound = useCallback(async () => {
     const newSoundState = !soundEnabled;
     setSoundEnabled(newSoundState);
-    const settings = await getSettings();
-    await saveSettings({ ...settings, soundEnabled: newSoundState });
-  };
+    const result = await safeAsync(async () => {
+      const settings = await getSettings();
+      return await saveSettings({ ...settings, soundEnabled: newSoundState });
+    }, 'Saving settings');
+    
+    if (result.error) {
+      // Revert on error
+      setSoundEnabled(soundEnabled);
+    }
+  }, [soundEnabled]);
 
-  const levels = ['beginner', 'intermediate', 'advanced'];
+  const levels = useMemo(() => ['beginner', 'intermediate', 'advanced'], []);
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>🧩 Puzzle Fun</Text>
-        <Text style={styles.subtitle}>Train Your Brain!</Text>
-        <CharacterMascot 
-          emotion="excited"
-          message="Welcome! Ready to solve some puzzles? 🎮"
-          visible={true}
-        />
-      </View>
+    <View style={styles.container}>
+      <SafeAreaView style={styles.headerContainer}>
+        <View style={styles.header}>
+          <Text style={styles.title}>🧩 Puzzle Fun</Text>
+          <Text style={styles.subtitle}>Train Your Brain!</Text>
+        </View>
+      </SafeAreaView>
 
-      {streak && streak.currentStreak > 0 && (
+      <ScrollView 
+        style={styles.scrollContent}
+        contentContainerStyle={styles.scrollContentContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <SkeletonLoader width="100%" height={100} style={styles.skeletonCard} />
+            <SkeletonLoader width="100%" height={80} style={styles.skeletonCard} />
+            <SkeletonLoader width="100%" height={60} style={styles.skeletonCard} />
+          </View>
+        ) : (
+          <>
+            <CharacterMascot 
+              emotion="excited"
+              message="Welcome! Ready to solve some puzzles? 🎮"
+              visible={true}
+            />
+
+            {streak && streak.currentStreak > 0 && (
         <View style={styles.streakCard}>
           <Text style={styles.streakTitle}>🔥 Your Streak</Text>
           <Text style={styles.streakCount}>{streak.currentStreak} Days!</Text>
@@ -120,6 +169,28 @@ const HomeScreen = ({ navigation }) => {
           }}
           style={styles.storyButton}
         />
+        
+        <AnimatedButton
+          title="Snake Counting"
+          emoji="🐍"
+          onPress={() => {
+            hapticFeedback.medium();
+            playSound('click');
+            navigation.navigate('SnakeLevelSelect');
+          }}
+          style={styles.snakeButton}
+        />
+        
+        <AnimatedButton
+          title="Bunny's Helpers"
+          emoji="🐰"
+          onPress={() => {
+            hapticFeedback.medium();
+            playSound('click');
+            navigation.navigate('BunnyGameSelect');
+          }}
+          style={styles.bunnyButton}
+        />
       </View>
 
       <View style={styles.levelsContainer}>
@@ -135,8 +206,11 @@ const HomeScreen = ({ navigation }) => {
           </TouchableOpacity>
         ))}
       </View>
+          </>
+        )}
+      </ScrollView>
 
-      <View style={styles.footer}>
+      <View style={styles.fixedFooter}>
         <AnimatedButton
           title="Your Progress"
           emoji="📊"
@@ -163,7 +237,7 @@ const HomeScreen = ({ navigation }) => {
           </Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -172,10 +246,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F5F5',
   },
-  header: {
+  headerContainer: {
     backgroundColor: '#4A90E2',
-    padding: 30,
+    paddingBottom: 10,
+  },
+  header: {
+    padding: 20,
+    paddingTop: 10,
     alignItems: 'center',
+  },
+  scrollContent: {
+    flex: 1,
+  },
+  scrollContentContainer: {
+    paddingBottom: 20,
   },
   title: {
     fontSize: 36,
@@ -188,8 +272,11 @@ const styles = StyleSheet.create({
     color: '#E3F2FD',
   },
   playButtonContainer: {
-    padding: 20,
+    padding: getPadding(),
     alignItems: 'center',
+    maxWidth: getMaxContentWidth(),
+    alignSelf: 'center',
+    width: '100%',
   },
   playButton: {
     backgroundColor: '#4CAF50',
@@ -273,6 +360,16 @@ const styles = StyleSheet.create({
     marginTop: 12,
     width: '100%',
   },
+  snakeButton: {
+    backgroundColor: '#FF5722',
+    marginTop: 12,
+    width: '100%',
+  },
+  bunnyButton: {
+    backgroundColor: '#FFB74D',
+    marginTop: 12,
+    width: '100%',
+  },
   statsButton: {
     backgroundColor: '#9C27B0',
     marginBottom: 12,
@@ -309,8 +406,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
   },
-  footer: {
-    padding: 20,
+  fixedFooter: {
+    backgroundColor: '#FFFFFF',
+    padding: 16,
+    paddingBottom: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#E0E0E0',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
     alignItems: 'center',
   },
   settingsButton: {
@@ -334,6 +440,13 @@ const styles = StyleSheet.create({
   soundButtonText: {
     fontSize: 16,
     color: '#FFFFFF',
+  },
+  loadingContainer: {
+    padding: 20,
+  },
+  skeletonCard: {
+    marginBottom: 16,
+    borderRadius: 12,
   },
 });
 

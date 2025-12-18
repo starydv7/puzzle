@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
 import PuzzleCard from '../components/PuzzleCard';
 import { getPuzzlesByLevel, getLevelDisplayName, getAgeGroup } from '../utils/gameLogic';
 import { getProgress, getPuzzleStars, isPuzzleUnlocked } from '../utils/storage';
@@ -52,19 +52,28 @@ const LevelSelectScreen = ({ navigation, route }) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backButtonText}>← Back</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>{getLevelDisplayName(selectedLevel)}</Text>
-        <Text style={styles.ageGroup}>{getAgeGroup(selectedLevel)}</Text>
-      </View>
+    <View style={styles.container}>
+      <SafeAreaView style={styles.headerContainer}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.backButtonText}>← Back</Text>
+          </TouchableOpacity>
+          <View style={styles.headerTextContainer}>
+            <Text style={styles.title}>{getLevelDisplayName(selectedLevel)}</Text>
+            <Text style={styles.ageGroup}>{getAgeGroup(selectedLevel)}</Text>
+          </View>
+        </View>
+      </SafeAreaView>
 
-      <View style={styles.puzzlesGrid}>
+      <ScrollView 
+        style={styles.scrollContent}
+        contentContainerStyle={styles.scrollContentContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.puzzlesGrid}>
         {puzzles.map((puzzle, index) => {
           const stars = puzzleStars[puzzle.id] || 0;
           const isLocked = index > 0 && (!progress || progress[selectedLevel]?.completed?.length < index);
@@ -80,8 +89,9 @@ const LevelSelectScreen = ({ navigation, route }) => {
             />
           );
         })}
-      </View>
-    </ScrollView>
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
@@ -90,13 +100,28 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F5F5',
   },
-  header: {
+  headerContainer: {
     backgroundColor: '#4A90E2',
+    paddingBottom: 0,
+  },
+  header: {
     padding: 20,
-    paddingTop: 50,
+    paddingTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerTextContainer: {
+    flex: 1,
+    marginLeft: 10,
   },
   backButton: {
-    marginBottom: 10,
+    marginRight: 10,
+  },
+  scrollContent: {
+    flex: 1,
+  },
+  scrollContentContainer: {
+    paddingBottom: 20,
   },
   backButtonText: {
     fontSize: 18,

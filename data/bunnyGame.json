@@ -1,0 +1,66 @@
+{
+  "story": {
+    "welcome": "Welcome, Bunny Helper! 🐰💛\nBunny needs your help today!",
+    "collectIntro": "Bunny is collecting carrots for lunch!",
+    "shareIntro": "Bunny has friends who are hungry! Can you help share fairly?",
+    "partyIntro": "Bunny is throwing a party! Let's prepare!",
+    "fixIntro": "Oh no! Bunny made a mistake. Can you help fix it?"
+  },
+  "levels": {
+    "collect": [
+      { "id": 1, "target": 3, "items": ["carrot"], "difficulty": "easy" },
+      { "id": 2, "target": 5, "items": ["carrot"], "difficulty": "easy" },
+      { "id": 3, "target": 6, "items": ["carrot"], "difficulty": "medium" },
+      { "id": 4, "target": 8, "items": ["carrot", "apple"], "difficulty": "medium" },
+      { "id": 5, "target": 10, "items": ["carrot", "apple", "berry"], "difficulty": "hard" }
+    ],
+    "share": [
+      { "id": 1, "items": 4, "friends": 2, "itemType": "carrot", "difficulty": "easy" },
+      { "id": 2, "items": 6, "friends": 2, "itemType": "apple", "difficulty": "easy" },
+      { "id": 3, "items": 8, "friends": 4, "itemType": "carrot", "difficulty": "medium" },
+      { "id": 4, "items": 9, "friends": 3, "itemType": "berry", "difficulty": "medium" },
+      { "id": 5, "items": 12, "friends": 4, "itemType": "apple", "difficulty": "hard" },
+      { "id": 6, "items": 15, "friends": 5, "itemType": "carrot", "difficulty": "hard" }
+    ],
+    "party": [
+      { "id": 1, "items": 6, "groupSize": 2, "itemType": "apple", "difficulty": "easy" },
+      { "id": 2, "items": 9, "groupSize": 3, "itemType": "carrot", "difficulty": "easy" },
+      { "id": 3, "items": 12, "groupSize": 3, "itemType": "berry", "difficulty": "medium" },
+      { "id": 4, "items": 12, "groupSize": 4, "itemType": "apple", "difficulty": "medium" },
+      { "id": 5, "items": 15, "groupSize": 5, "itemType": "carrot", "difficulty": "hard" }
+    ],
+    "fix": [
+      { "id": 1, "items": 6, "friends": 3, "itemType": "carrot", "mistake": "one_extra", "difficulty": "easy" },
+      { "id": 2, "items": 8, "friends": 4, "itemType": "apple", "mistake": "one_missing", "difficulty": "medium" },
+      { "id": 3, "items": 9, "friends": 3, "itemType": "berry", "mistake": "uneven", "difficulty": "hard" }
+    ]
+  },
+  "rewards": {
+    "carrotCoins": { "name": "Carrot Coins", "emoji": "🥕", "description": "Collect coins for Bunny's house!" },
+    "bunnyHats": { "name": "Bunny Hats", "emoji": "🎩", "description": "Dress up Bunny!" },
+    "houseItems": { "name": "House Items", "emoji": "🏠", "description": "Decorate Bunny's home!" },
+    "animalFriends": { "name": "Animal Friends", "emoji": "🐿️", "description": "Meet new friends!" },
+    "gardenDecor": { "name": "Garden Decor", "emoji": "🌸", "description": "Make the garden beautiful!" }
+  },
+  "bunnyMessages": {
+    "happy": [
+      "Yay! Thank you, Helper! 🎉",
+      "You're amazing! 💛",
+      "I couldn't do this without you!",
+      "You're the best helper ever! 🌟"
+    ],
+    "encouraging": [
+      "You can do it! 💪",
+      "Try again, Helper!",
+      "Almost there! 🌟",
+      "Keep going! 🐰"
+    ],
+    "mistake": [
+      "Hmm... one friend has more 😄\nCan you fix it?",
+      "Let's try again!",
+      "Almost perfect! Just a little adjustment!",
+      "You're learning! Try once more! 💛"
+    ]
+  }
+}
+

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Animated } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Animated, SafeAreaView } from 'react-native';
 import OptionButton from '../components/OptionButton';
 import CharacterMascot from '../components/CharacterMascot';
 import HintButton from '../components/HintButton';
 import LoadingSpinner from '../components/LoadingSpinner';
+import AnimatedButton from '../components/AnimatedButton';
+import { accessibilityProps, labels } from '../utils/accessibility';
+import { safeAsync, handleError } from '../utils/errorHandler';
 import { getPuzzleById, getPuzzleWithShuffledOptions, checkAnswer, calculateStars } from '../utils/gameLogic';
 import { saveProgress } from '../utils/storage';
 import { playSound } from '../utils/soundManager';
@@ -71,7 +74,7 @@ const PuzzleScreen = ({ navigation, route }) => {
     }
 
     setIsSubmitted(true);
-    setAttempts(attempts + 1);
+    setAttempts(prev => prev + 1);
     
     const isCorrect = checkAnswer(puzzle, selectedIndex);
     const timeTaken = Math.floor((Date.now() - startTime) / 1000);
@@ -96,23 +99,34 @@ const PuzzleScreen = ({ navigation, route }) => {
         }),
       ]).start();
       
-      // Save progress
-      await saveProgress(level, puzzleId, stars);
+      // Save progress with error handling
+      const saveResult = await safeAsync(
+        () => saveProgress(level, puzzleId, stars),
+        'Saving progress'
+      );
+      
+      if (saveResult.error) {
+        // Progress save failed, but continue anyway
+        handleError(saveResult.originalError, 'PuzzleScreen');
+      }
       
       // Update streak
-      await updateStreak();
+      await safeAsync(() => updateStreak(), 'Updating streak');
       
       // Record performance for adaptive difficulty
-      await recordPerformance(puzzleId, {
-        attempts: attempts + 1,
-        time: timeTaken,
-        hintsUsed: hintUsed ? 1 : 0,
-        success: true,
-      });
+      await safeAsync(
+        () => recordPerformance(puzzleId, {
+          attempts: attempts + 1,
+          time: timeTaken,
+          hintsUsed: hintUsed ? 1 : 0,
+          success: true,
+        }),
+        'Recording performance'
+      );
       
       // Complete daily challenge if applicable
       if (isDailyChallenge) {
-        await completeDailyChallenge();
+        await safeAsync(() => completeDailyChallenge(), 'Completing daily challenge');
       }
       
       // Show result after a brief delay
@@ -170,18 +184,25 @@ const PuzzleScreen = ({ navigation, route }) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backButtonText}>← Back</Text>
-        </TouchableOpacity>
-        <Text style={styles.levelText}>Level {puzzleIndex + 1}</Text>
-      </View>
+    <View style={styles.container}>
+      <SafeAreaView style={styles.headerContainer}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.backButtonText}>← Back</Text>
+          </TouchableOpacity>
+          <Text style={styles.levelText}>Level {puzzleIndex + 1}</Text>
+        </View>
+      </SafeAreaView>
 
-      <View style={styles.content}>
+      <ScrollView 
+        style={styles.scrollContent}
+        contentContainerStyle={styles.scrollContentContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.content}>
         <CharacterMascot 
           emotion={isSubmitted && puzzle.correct === selectedIndex ? "celebrating" : "thinking"}
           message={mascotMessage}
@@ -227,32 +248,32 @@ const PuzzleScreen = ({ navigation, route }) => {
           })}
         </View>
 
-        <View style={styles.actionButtons}>
-          {!isSubmitted && (
-            <>
-              <HintButton
-                onPress={handleHint}
-                hintUsed={hintUsed}
-                disabled={isSubmitted}
-              />
-              <TouchableOpacity
-                style={[styles.submitButton, selectedIndex === null && styles.submitButtonDisabled]}
-                onPress={handleSubmit}
-                disabled={selectedIndex === null}
-              >
-                <Text style={styles.submitButtonText}>✓ Submit Answer</Text>
-              </TouchableOpacity>
-            </>
-          )}
-        </View>
-
         {isSubmitted && puzzle.correct === selectedIndex && (
           <View style={styles.feedbackContainer}>
             <Text style={styles.correctText}>🎉 Correct! Great job!</Text>
           </View>
         )}
-      </View>
-    </ScrollView>
+        </View>
+      </ScrollView>
+
+        {!isSubmitted && (
+          <View style={styles.actionButtons}>
+            <HintButton
+              onPress={handleHint}
+              hintUsed={hintUsed}
+              disabled={isSubmitted}
+            />
+            <AnimatedButton
+              title="Submit Answer"
+              emoji="✓"
+              onPress={handleSubmit}
+              disabled={selectedIndex === null}
+              style={[styles.submitButton, selectedIndex === null && styles.submitButtonDisabled]}
+              {...accessibilityProps.button(labels.submitButton, 'Submit your selected answer')}
+            />
+          </View>
+        )}
+    </View>
   );
 };
 
@@ -261,13 +282,22 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F5F5',
   },
-  header: {
+  headerContainer: {
     backgroundColor: '#4A90E2',
+    paddingBottom: 0,
+  },
+  header: {
     padding: 20,
-    paddingTop: 50,
+    paddingTop: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  scrollContent: {
+    flex: 1,
+  },
+  scrollContentContainer: {
+    paddingBottom: 20,
   },
   backButton: {},
   backButtonText: {
@@ -281,13 +311,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   content: {
-    padding: 20,
+    padding: 16,
+    paddingBottom: 8,
   },
   questionContainer: {
     backgroundColor: '#FFFFFF',
-    padding: 20,
+    padding: 16,
     borderRadius: 16,
-    marginBottom: 24,
+    marginBottom: 16,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -295,48 +326,45 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   questionText: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 16,
+    marginBottom: 12,
     textAlign: 'center',
   },
   patternContainer: {
     backgroundColor: '#F5F5F5',
-    padding: 16,
+    padding: 14,
     borderRadius: 12,
     alignItems: 'center',
   },
   patternText: {
-    fontSize: 32,
+    fontSize: 28,
     textAlign: 'center',
   },
   optionsContainer: {
-    marginBottom: 20,
+    marginBottom: 12,
   },
   actionButtons: {
-    marginTop: 10,
+    backgroundColor: '#FFFFFF',
+    padding: 16,
+    paddingBottom: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#E0E0E0',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   submitButton: {
     backgroundColor: '#4CAF50',
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginTop: 10,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
+    marginTop: 12,
+    width: '100%',
   },
   submitButtonDisabled: {
     backgroundColor: '#CCCCCC',
     opacity: 0.6,
-  },
-  submitButtonText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
   },
   feedbackContainer: {
     marginTop: 20,
