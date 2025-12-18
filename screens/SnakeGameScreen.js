@@ -10,7 +10,7 @@ import {
   Vibration,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getGameConfig, generateSequence, isCorrectNumber, calculateScore } from '../utils/snakeGameLogic';
+import { getGameConfig, generateSequence, isCorrectNumber, calculateScore, COUNTING_MODES } from '../utils/snakeGameLogic';
 import { recordGameResult } from '../utils/snakeGameStorage';
 import { playSound } from '../utils/soundManager';
 import { hapticFeedback } from '../utils/haptics';
@@ -60,25 +60,46 @@ const SnakeGameScreen = ({ navigation, route }) => {
   const [gameOver, setGameOver] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [score, setScore] = useState(0);
-  const [expectedNumber, setExpectedNumber] = useState(config.mode.step);
+  const [expectedNumber, setExpectedNumber] = useState(null);
   const [numbersCollected, setNumbersCollected] = useState(0);
   const [startTime] = useState(Date.now());
   const [gameStarted, setGameStarted] = useState(false);
   const [mascotMessage, setMascotMessage] = useState(`Collect numbers: ${config.mode.description}`);
   
   const gameLoopRef = useRef(null);
-  const sequenceRef = useRef(generateSequence(config.mode, config.startNumber, 100));
+  const sequenceRef = useRef(null);
   const currentIndexRef = useRef(0);
+  const directionRef = useRef(DIRECTIONS.RIGHT);
+  const foodRef = useRef(null);
 
-  // Initialize snake
+  // Initialize game
   useEffect(() => {
+    // Generate sequence
+    const sequence = generateSequence(config.mode, config.startNumber, 100);
+    sequenceRef.current = sequence;
+    
+    // Set initial expected number (first number in sequence)
+    if (sequence.length > 0) {
+      setExpectedNumber(sequence[0]);
+      currentIndexRef.current = 0;
+    }
+    
+    // Initialize snake
     const initialSnake = [];
     for (let i = 0; i < config.startLength; i++) {
       initialSnake.push({ x: i, y: Math.floor(GRID_SIZE / 2) });
     }
     setSnake(initialSnake);
-    spawnFood();
-  }, [GRID_SIZE]);
+    
+    // Spawn initial food after snake is set
+    const timer = setTimeout(() => {
+      if (sequence.length > 0 && initialSnake.length > 0) {
+        spawnFood(initialSnake, sequence[0]);
+      }
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, [GRID_SIZE, config.startLength]);
 
   // Game loop
   useEffect(() => {
@@ -90,6 +111,9 @@ const SnakeGameScreen = ({ navigation, route }) => {
       return;
     }
 
+    // Update direction ref when nextDirection changes
+    directionRef.current = nextDirection;
+
     gameLoopRef.current = setInterval(() => {
       moveSnake();
     }, config.speed);
@@ -100,37 +124,58 @@ const SnakeGameScreen = ({ navigation, route }) => {
         gameLoopRef.current = null;
       }
     };
-  }, [gameStarted, gameOver, isPaused]);
+  }, [gameStarted, gameOver, isPaused, nextDirection]);
 
-  const spawnFood = useCallback(() => {
-    const nextNumber = sequenceRef.current[currentIndexRef.current];
-    if (!nextNumber) return;
+  const spawnFood = useCallback((currentSnake, targetNumber) => {
+    // Get target number from sequence if not provided
+    if (!targetNumber && sequenceRef.current) {
+      targetNumber = sequenceRef.current[currentIndexRef.current];
+    }
+    if (!targetNumber || targetNumber === undefined || targetNumber === null) {
+      return;
+    }
+    
+    // Use provided snake or empty array as fallback
+    const snakeToCheck = currentSnake || [];
     
     // Place correct number
     let newFood;
     let attempts = 0;
+    const maxAttempts = 300;
+    
     do {
       newFood = {
         x: Math.floor(Math.random() * GRID_SIZE),
         y: Math.floor(Math.random() * GRID_SIZE),
-        number: nextNumber,
+        number: targetNumber,
         isCorrect: true,
       };
       attempts++;
-      if (attempts > 100) break; // Prevent infinite loop
-    } while (snake.some(segment => segment.x === newFood.x && segment.y === newFood.y));
+      
+      // Check if position is not on snake
+      const isOnSnake = snakeToCheck.some(segment => 
+        segment && segment.x === newFood.x && segment.y === newFood.y
+      );
+      if (!isOnSnake) {
+        break;
+      }
+    } while (attempts < maxAttempts);
     
-    if (newFood) {
+    if (newFood && attempts < maxAttempts) {
       setFood(newFood);
+      foodRef.current = newFood;
     }
-  }, [snake]);
+  }, [GRID_SIZE]);
 
   const moveSnake = useCallback(() => {
     setSnake(prevSnake => {
       const head = prevSnake[0];
-      if (!head) return prevSnake;
+      if (!head || prevSnake.length === 0) {
+        return prevSnake;
+      }
       
-      const currentDir = nextDirection;
+      // Use ref to get current direction (avoids stale closure)
+      const currentDir = directionRef.current;
       const newHead = {
         x: head.x + currentDir.x,
         y: head.y + currentDir.y,
@@ -143,40 +188,54 @@ const SnakeGameScreen = ({ navigation, route }) => {
         newHead.y < 0 ||
         newHead.y >= GRID_SIZE
       ) {
-        handleGameOver();
+        setTimeout(() => handleGameOver(), 0);
         return prevSnake;
       }
 
-      // Check self collision
-      if (prevSnake.some(segment => segment.x === newHead.x && segment.y === newHead.y)) {
-        handleGameOver();
+      // Check self collision (don't check head itself, only body)
+      const bodyCollision = prevSnake.slice(1).some(segment => 
+        segment.x === newHead.x && segment.y === newHead.y
+      );
+      if (bodyCollision) {
+        setTimeout(() => handleGameOver(), 0);
         return prevSnake;
       }
 
-      // Check food collision before moving
-      setFood(currentFood => {
-        if (currentFood && newHead.x === currentFood.x && newHead.y === currentFood.y) {
-          // Food eaten - grow snake
-          handleFoodCollection(currentFood);
-          return null; // Remove food, will spawn new one
-        }
-        return currentFood;
-      });
+      // Check food collision using ref (current food state)
+      const currentFood = foodRef.current;
+      const foodEaten = currentFood && 
+        newHead.x === currentFood.x && 
+        newHead.y === currentFood.y;
 
-      const newSnake = [newHead, ...prevSnake];
-      
-      // Check if food was eaten (snake should grow)
-      const foodEaten = food && newHead.x === food.x && newHead.y === food.y;
-      
-      // Remove tail if no food eaten
-      return foodEaten ? newSnake : newSnake.slice(0, -1);
+      if (foodEaten) {
+        // Food eaten - grow snake and handle collection
+        const foodToCollect = { ...currentFood };
+        
+        // Clear food immediately
+        setFood(null);
+        foodRef.current = null;
+        
+        // Handle collection asynchronously
+        setTimeout(() => {
+          handleFoodCollection(foodToCollect);
+        }, 0);
+        
+        // Return grown snake (don't remove tail - snake grows)
+        return [newHead, ...prevSnake];
+      } else {
+        // No food eaten - move snake (remove tail to maintain length)
+        return [newHead, ...prevSnake.slice(0, -1)];
+      }
     });
-  }, [nextDirection, food]);
+  }, [GRID_SIZE]);
 
   const handleFoodCollection = useCallback((collectedFood) => {
-    if (!collectedFood) return;
+    if (!collectedFood || !collectedFood.number) return;
 
-    const isCorrect = isCorrectNumber(collectedFood.number, expectedNumber);
+    const currentExpected = expectedNumber;
+    if (!currentExpected) return;
+
+    const isCorrect = isCorrectNumber(collectedFood.number, currentExpected);
     
     if (isCorrect) {
       // Correct number!
@@ -184,22 +243,41 @@ const SnakeGameScreen = ({ navigation, route }) => {
       playSound('celebration');
       setMascotMessage(`Great! You found ${collectedFood.number}! 🎉`);
       
-      setScore(prev => prev + 10);
+      setScore(prev => {
+        const newScore = (prev || 0) + 10;
+        return newScore;
+      });
+      
       setNumbersCollected(prev => {
-        const newCount = prev + 1;
+        const newCount = (prev || 0) + 1;
         
         // Move to next expected number
-        currentIndexRef.current++;
-        const nextExpected = sequenceRef.current[currentIndexRef.current];
-        if (nextExpected) {
-          setExpectedNumber(nextExpected);
+        if (sequenceRef.current && currentIndexRef.current < sequenceRef.current.length - 1) {
+          currentIndexRef.current++;
+          const nextExpected = sequenceRef.current[currentIndexRef.current];
+          if (nextExpected !== undefined && nextExpected !== null) {
+            setExpectedNumber(nextExpected);
+          }
         }
         
         // Check for level completion (collect 20 numbers)
         if (newCount >= 20) {
-          setTimeout(() => handleLevelComplete(), 100);
+          setTimeout(() => handleLevelComplete(), 500);
         } else {
-          setTimeout(() => spawnFood(), 100);
+          // Spawn new food after a short delay
+          setTimeout(() => {
+            const nextNum = sequenceRef.current?.[currentIndexRef.current];
+            if (nextNum !== undefined && nextNum !== null) {
+              // Get current snake and spawn food
+              setSnake(currentSnake => {
+                if (currentSnake && currentSnake.length > 0) {
+                  // Spawn food with current snake
+                  spawnFood(currentSnake, nextNum);
+                }
+                return currentSnake;
+              });
+            }
+          }, 400);
         }
         
         return newCount;
@@ -209,8 +287,8 @@ const SnakeGameScreen = ({ navigation, route }) => {
       hapticFeedback.error();
       playSound('wrong');
       Vibration.vibrate(500);
-      setMascotMessage(`Oops! That's not ${expectedNumber}. Try again! 💪`);
-      setTimeout(() => handleGameOver(), 100);
+      setMascotMessage(`Oops! That's not ${currentExpected}. Try again! 💪`);
+      setTimeout(() => handleGameOver(), 500);
     }
   }, [expectedNumber, spawnFood]);
 
@@ -218,19 +296,24 @@ const SnakeGameScreen = ({ navigation, route }) => {
     setGameOver(true);
     if (gameLoopRef.current) {
       clearInterval(gameLoopRef.current);
+      gameLoopRef.current = null;
     }
     
-    const timeElapsed = Date.now() - startTime;
-    const finalScore = calculateScore(numbersCollected, timeElapsed, difficulty, config.mode);
+    const timeElapsed = Math.floor((Date.now() - startTime) / 1000); // Convert to seconds
+    const modeKey = Object.keys(COUNTING_MODES).find(
+      key => COUNTING_MODES[key].step === config.mode.step
+    ) || 'COUNT_BY_1';
     
-    await recordGameResult(level, difficulty, finalScore, numbersCollected, true);
+    const finalScore = calculateScore(numbersCollected || 0, timeElapsed, difficulty, modeKey);
+    
+    await recordGameResult(level, difficulty, finalScore || 0, numbersCollected || 0, true);
     
     hapticFeedback.success();
     playSound('celebration');
     
     Alert.alert(
       '🎉 Level Complete! 🎉',
-      `You collected ${numbersCollected} numbers!\nScore: ${finalScore}`,
+      `You collected ${numbersCollected || 0} numbers!\nScore: ${finalScore || 0}`,
       [
         {
           text: 'Play Again',
@@ -260,16 +343,21 @@ const SnakeGameScreen = ({ navigation, route }) => {
     setGameOver(true);
     if (gameLoopRef.current) {
       clearInterval(gameLoopRef.current);
+      gameLoopRef.current = null;
     }
     
-    const timeElapsed = Date.now() - startTime;
-    const finalScore = calculateScore(numbersCollected, timeElapsed, difficulty, config.mode);
+    const timeElapsed = Math.floor((Date.now() - startTime) / 1000); // Convert to seconds
+    const modeKey = Object.keys(COUNTING_MODES).find(
+      key => COUNTING_MODES[key].step === config.mode.step
+    ) || 'COUNT_BY_1';
     
-    await recordGameResult(level, difficulty, finalScore, numbersCollected, false);
+    const finalScore = calculateScore(numbersCollected || 0, timeElapsed, difficulty, modeKey);
+    
+    await recordGameResult(level, difficulty, finalScore || 0, numbersCollected || 0, false);
     
     Alert.alert(
       'Game Over!',
-      `You collected ${numbersCollected} numbers!\nScore: ${finalScore}\n\nFind the number: ${expectedNumber}`,
+      `You collected ${numbersCollected || 0} numbers!\nScore: ${finalScore || 0}\n\nFind the number: ${expectedNumber || config.mode.step}`,
       [
         {
           text: 'Try Again',
@@ -286,19 +374,30 @@ const SnakeGameScreen = ({ navigation, route }) => {
   };
 
   const changeDirection = (newDirection) => {
+    // Get current direction from ref to avoid stale state
+    const currentDir = directionRef.current;
+    
     // Prevent reversing into itself
     if (
-      (newDirection.x === -direction.x && newDirection.y === direction.y) ||
-      (newDirection.y === -direction.y && newDirection.x === direction.x)
+      (newDirection.x === -currentDir.x && newDirection.y === currentDir.y) ||
+      (newDirection.y === -currentDir.y && newDirection.x === currentDir.x)
     ) {
       return;
     }
     setNextDirection(newDirection);
+    directionRef.current = newDirection;
   };
 
   const startGame = () => {
+    // Ensure expected number is set
+    if (!expectedNumber && sequenceRef.current && sequenceRef.current.length > 0) {
+      setExpectedNumber(sequenceRef.current[0]);
+      currentIndexRef.current = 0;
+    }
+    
     setGameStarted(true);
-    setMascotMessage(`Find number: ${expectedNumber}! 🎯`);
+    const targetNum = expectedNumber || sequenceRef.current?.[0] || config.mode.step;
+    setMascotMessage(`Find number: ${targetNum}! 🎯`);
   };
 
   const togglePause = () => {
@@ -388,9 +487,9 @@ const SnakeGameScreen = ({ navigation, route }) => {
             <Text style={styles.pauseButton}>{isPaused ? '▶️' : '⏸️'}</Text>
           </TouchableOpacity>
           <View style={styles.scoreContainer}>
-            <Text style={styles.scoreText}>Score: {score}</Text>
-            <Text style={styles.expectedText}>Find: {expectedNumber}</Text>
-            <Text style={styles.collectedText}>Collected: {numbersCollected}/20</Text>
+            <Text style={styles.scoreText}>Score: {score || 0}</Text>
+            <Text style={styles.expectedText}>Find: {expectedNumber || sequenceRef.current?.[0] || config.mode.step}</Text>
+            <Text style={styles.collectedText}>Collected: {numbersCollected || 0}/20</Text>
           </View>
         </View>
 

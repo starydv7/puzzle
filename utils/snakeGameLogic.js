@@ -90,7 +90,13 @@ export const generateWrongNumbers = (correctNumber, mode, count = 3) => {
  * Calculate score based on game performance
  */
 export const calculateScore = (numbersCollected, timeElapsed, difficulty, mode) => {
-  const baseScore = numbersCollected * 10;
+  // Ensure valid numbers
+  const collected = numbersCollected || 0;
+  const time = timeElapsed || 0;
+  const diff = difficulty || 'EASY';
+  const modeKey = mode || 'COUNT_BY_1';
+  
+  const baseScore = collected * 10;
   const difficultyMultiplier = {
     EASY: 1,
     MEDIUM: 1.5,
@@ -104,14 +110,13 @@ export const calculateScore = (numbersCollected, timeElapsed, difficulty, mode) 
     COUNT_BY_10: 2.5,
   };
   
-  const timeBonus = Math.max(0, 1000 - timeElapsed); // Bonus for speed
-  const finalScore = Math.floor(
-    (baseScore + timeBonus) * 
-    difficultyMultiplier[difficulty] * 
-    modeMultiplier[mode]
-  );
+  // Time bonus (faster = more points, max 50 points)
+  const timeBonus = Math.max(0, Math.min(50, 50 - Math.floor(time / 10)));
   
-  return finalScore;
+  const multiplier = (difficultyMultiplier[diff] || 1) * (modeMultiplier[modeKey] || 1);
+  const finalScore = Math.floor((baseScore + timeBonus) * multiplier);
+  
+  return Math.max(0, finalScore); // Ensure non-negative
 };
 
 /**
