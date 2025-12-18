@@ -146,7 +146,7 @@ const ResultScreen = ({ navigation, route }) => {
             <Text style={styles.backButtonText}>Back to Levels</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </Animated.View>
     </View>
   );
 };
